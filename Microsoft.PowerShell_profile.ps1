@@ -41,3 +41,28 @@ Set-PSReadLineKeyHandler -Key Ctrl+x -ScriptBlock {
     fzf-rg-nvim
 }
 
+# FZF directory jump
+function fzf-cd {
+    $dir = fd --type d `
+        --exclude node_modules `
+        --exclude .git `
+        --exclude dist `
+        --exclude build `
+        --exclude .next `
+        --exclude out `
+        --exclude target `
+        --exclude bin `
+        --exclude obj |
+        fzf |
+        Out-String
+
+    $dir = $dir.Trim()
+
+    if ($dir) {
+        Set-Location $dir
+    }
+}
+
+Set-PSReadLineKeyHandler -Key Ctrl+d -ScriptBlock {
+    fzf-cd
+}
