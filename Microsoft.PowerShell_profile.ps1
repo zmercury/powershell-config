@@ -65,4 +65,13 @@ function fzf-cd {
 
 Set-PSReadLineKeyHandler -Key Ctrl+d -ScriptBlock {
     fzf-cd
+
+    $type = [Microsoft.PowerShell.PSConsoleReadLine]
+
+    if ($type.GetMethod("ClearLine")) {
+        $type::ClearLine()
+    }
+
+    $type::InvokePrompt()
 }
+
