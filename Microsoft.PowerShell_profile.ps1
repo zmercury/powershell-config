@@ -63,8 +63,43 @@ function fzf-cd {
     }
 }
 
-Set-PSReadLineKeyHandler -Key Ctrl+d -ScriptBlock {
+Set-PSReadLineKeyHandler -Key Alt+d -ScriptBlock {
     fzf-cd
+
+    $type = [Microsoft.PowerShell.PSConsoleReadLine]
+
+    if ($type.GetMethod("ClearLine")) {
+        $type::ClearLine()
+    }
+
+    $type::InvokePrompt()
+}
+
+# FZF directory jump and open nvim
+function fzf-nvim-dir {
+    $dir = fd --type d `
+        --exclude node_modules `
+        --exclude .git `
+        --exclude dist `
+        --exclude build `
+        --exclude .next `
+        --exclude out `
+        --exclude target `
+        --exclude bin `
+        --exclude obj |
+        fzf |
+        Out-String
+
+    $dir = $dir.Trim()
+
+    if ($dir) {
+        Set-Location $dir
+        Start-Process nvim -ArgumentList "." -NoNewWindow -Wait
+    }
+}
+
+Set-PSReadLineKeyHandler -Key Ctrl+d -ScriptBlock {
+    fzf-nvim-dir
 
     $type = [Microsoft.PowerShell.PSConsoleReadLine]
 
