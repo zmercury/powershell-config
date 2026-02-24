@@ -57,9 +57,11 @@ function fzf-cd {
         Out-String
 
     $dir = $dir.Trim()
+    $type = [Microsoft.PowerShell.PSConsoleReadLine]
 
     if ($dir) {
         Set-Location $dir
+        $type::DeleteLine()
     }
 }
 
