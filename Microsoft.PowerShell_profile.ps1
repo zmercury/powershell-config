@@ -57,24 +57,19 @@ function fzf-cd {
         Out-String
 
     $dir = $dir.Trim()
-    $type = [Microsoft.PowerShell.PSConsoleReadLine]
-
     if ($dir) {
         Set-Location $dir
-        $type::DeleteLine()
+        return $true
     }
+    return $false
 }
 
 Set-PSReadLineKeyHandler -Key Alt+d -ScriptBlock {
-    fzf-cd
-
-    $type = [Microsoft.PowerShell.PSConsoleReadLine]
-
-    if ($type.GetMethod("ClearLine")) {
-        $type::ClearLine()
+    $jumped = fzf-cd
+    if ($jumped) {
+        Clear-Host
     }
-
-    $type::InvokePrompt()
+    [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
 }
 
 # FZF directory jump and open nvim
